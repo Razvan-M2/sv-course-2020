@@ -1,16 +1,26 @@
-#parentDiv{
+#parentDivCanvas{
     position:absolute;
     margin-top:40px;
     margin-left:40px; 
 }
 
 #centerBox{
-    display: flex;
-    width: 100%;
+
+
+    /* Method #1 - less lines*/
+      
     height: 100%;
-    margin: auto;
-    align-items:center;
-    justify-content:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Method #2 - absolute and margins 50-50*/
+
+    /* right: 50%;
+    bottom: 50%;
+    transform: translate(50%,50%);
+    position: absolute; */
+
 }
 
 #colorTag{
