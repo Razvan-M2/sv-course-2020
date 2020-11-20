@@ -1,0 +1,37 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema #2</title>
+    <link href="css/style2.css" rel="stylesheet">
+    <script type="module" src="js/main2.js"></script>
+</head>
+
+<body>
+    <canvas id="interractiveCanvas" width="800" height="600"></canvas>
+    <button id="interractiveButton" onclick="spawnRandomCircleOnCanvas()">Spawn a circle!</button>
+
+    <script>
+        //  Exercise 5
+
+        /** @type {CanvasRenderingContext2D} */
+
+        const canvas = document.getElementById('interractiveCanvas');
+        const context = canvas.getContext('2d');
+
+        function spawnRandomCircleOnCanvas() {
+
+            var x = Math.random() * 750;
+            var y = Math.random() * 550;
+
+            var colorString = 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
+
+            context.fillStyle = colorString;
+            context.fillRect(x, y, 50, 50);
+
+        }
+    </script>
+</body>
+
+</html>
