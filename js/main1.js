@@ -28,83 +28,84 @@ arr2.forEach((element, index) => {
 const canvas = document.getElementById('interractiveCanvas');
 const context = canvas.getContext('2d');
 
-const GeorgeAsset = new Image();
-GeorgeAsset.src = 'assets/george.png';
-const George = {
+const MarioAsset = new Image();
+MarioAsset.src = 'assets/mario-2.png';
+const Mario = {
     xPos: 0,
     yPos: 0,
-    height: 48,
-    width: 48,
+    height: 38,
+    width: 32,
     orientation: 0,
     iteratedRowPose: 0
 }
 
-GeorgeAsset.onload = () => {
-    context.drawImage(GeorgeAsset, 0 * George.width, 0 * George.height, George.width, George.height, George.xPos, George.yPos, George.width, George.height);
+MarioAsset.onload = () => {
+    context.drawImage(MarioAsset, 0 * Mario.width, 0 * Mario.height, Mario.width, Mario.height, Mario.xPos, Mario.yPos, Mario.width, Mario.height);
 }
 
 var runningFunction = (event) => {
     context.clearRect(0, 0, 800, 600);
 
     var step = 15;
+    var iterativeLimit = 7;
 
     switch (event.key) {
         case 'ArrowUp': {
 
-            if (George.orientation == 2) {
-                George.iteratedRowPose += 2;
-                if (George.iteratedRowPose > 3)
-                    George.iteratedRowPose = 1;
+            if (Mario.orientation == 4) {
+                Mario.iteratedRowPose += 2;
+                if (Mario.iteratedRowPose > iterativeLimit)
+                    Mario.iteratedRowPose = 1;
 
             }
 
-            George.orientation = 2;
+            Mario.orientation = 4;
 
-            if (George.yPos > 0)
-                George.yPos -= step;
+            if (Mario.yPos > 0)
+                Mario.yPos -= step;
             break;
         }
         case 'ArrowDown': {
 
-            if (George.orientation == 0) {
-                George.iteratedRowPose += 2;
-                if (George.iteratedRowPose > 3)
-                    George.iteratedRowPose = 1;
+            if (Mario.orientation == 0) {
+                Mario.iteratedRowPose += 2;
+                if (Mario.iteratedRowPose > iterativeLimit)
+                    Mario.iteratedRowPose = 1;
             }
-            George.orientation = 0;
+            Mario.orientation = 0;
 
-            if (George.yPos + George.height + 10 < 600)
-                George.yPos += step;
+            if (Mario.yPos + Mario.height + 10 < 600)
+                Mario.yPos += step;
             break;
         }
         case 'ArrowLeft': {
 
-            if (George.orientation == 1) {
-                George.iteratedRowPose += 2;
-                if (George.iteratedRowPose > 3)
-                    George.iteratedRowPose = 1;
+            if (Mario.orientation == 6) {
+                Mario.iteratedRowPose += 2;
+                if (Mario.iteratedRowPose > iterativeLimit)
+                    Mario.iteratedRowPose = 1;
             }
-            George.orientation = 1;
+            Mario.orientation = 6;
 
-            if (George.xPos > 0)
-                George.xPos -= step;
+            if (Mario.xPos > 0)
+                Mario.xPos -= step;
             break;
         }
         case 'ArrowRight': {
 
-            if (George.orientation == 3) {
-                George.iteratedRowPose += 2;
-                if (George.iteratedRowPose > 3)
-                    George.iteratedRowPose = 1;
+            if (Mario.orientation == 2) {
+                Mario.iteratedRowPose += 2;
+                if (Mario.iteratedRowPose > iterativeLimit)
+                    Mario.iteratedRowPose = 1;
             }
-            George.orientation = 3;
+            Mario.orientation = 2;
 
-            if (George.xPos + George.width + 10 < 800)
-                George.xPos += step;
+            if (Mario.xPos + Mario.width + 10 < 800)
+                Mario.xPos += step;
             break;
         }
     }
-    context.drawImage(GeorgeAsset, George.orientation * George.width, George.iteratedRowPose * George.height, George.width, George.height, George.xPos, George.yPos, George.width, George.height);
+    context.drawImage(MarioAsset, Mario.iteratedRowPose * Mario.width, Mario.orientation * Mario.height, Mario.width, Mario.height, Mario.xPos, Mario.yPos, Mario.width, Mario.height);
 }
 
 document.addEventListener("keydown", runningFunction);
