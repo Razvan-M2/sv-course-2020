@@ -30,6 +30,8 @@ const context = canvas.getContext('2d');
 
 const MarioAsset = new Image();
 MarioAsset.src = 'assets/mario-2.png';
+
+/** Mario object for orientation */
 const Mario = {
     xPos: 0,
     yPos: 0,
