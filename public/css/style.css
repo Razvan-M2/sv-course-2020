@@ -1,0 +1,91 @@
+#showCounter{
+    width:40px;
+    height:20px;
+    margin-left:15px;
+    margin-bottom:15px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+/* Chat style */
+
+#join-chat{
+    margin-top:50px;
+    padding:15px;
+    border-radius: 9px;
+    border: 1px solid black;
+    width: 300px;
+}
+
+.display-none {
+    display: none;
+}
+
+#chat-container {
+    margin-top: 10px;
+}
+
+#chat-header{
+    height:30px;
+    margin-top:10px;
+    border-bottom:1px solid black;
+    border-radius:5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#chat-messages {
+    border: 1px solid black;
+    width: 500px;
+    height: 500px;
+    overflow: auto;
+    margin-bottom: 10px;
+    padding: 2px;
+}
+
+#leave-chat-button {
+    margin-top: 10px;
+}
+
+#user-color{
+    width:20%;
+    margin-left:10%;
+}
+
+#user-name-input{
+    width:50%;
+    /* margin-left:10%; */
+    margin-right:10%;
+}
+
+#join-chat-button{
+    width:50%;
+    margin:10px 25% 0px 25%;
+}
+
+
+
+/* Game style */
+#create-game-container {
+    /* margin-top: 50px; */
+    margin-top:50px;
+    padding:15px;
+    border-radius: 9px;
+    border: 1px solid black;
+    width:200px;
+}
+
+#game-canvas {
+    border: 1px solid black;
+}
+
+#game-name-input{
+    width: 80%;
+    margin: 0px 10% 0px 10%;
+}
+
+#create-game-button{
+    width:50%;
+    margin:10px 25% 0px 25%;
+}

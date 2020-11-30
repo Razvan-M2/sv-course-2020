@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <title>Tema #2</title>
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="showCounter"></div>
+    <button onclick="incrementValue()">Increment!</button>
+
+
+    <img src='assets/map.png' class='display-none' id='map-image'>
+    <img src='assets/space-ranger-player.png' class='display-none' id='space-ranger' />
+
+    <div id="join-chat">
+        <input type="color" id="user-color" name="favcolor" value="#ff0000">
+        <input type='text' id='user-name-input' placeholder='Enter your name' />
+        <button id='join-chat-button'>Join Chat</button>
+        <p id='user-name-missing' class='display-none'>Please enter user name to join chat!</p>
+    </div>
+
+    <div id='chat-container'>
+
+        <div id='chat-messages'>
+            <div id="chat-header">
+                There are so many players!
+            </div>
+
+        </div>
+        <input type='text' id='message' placeholder="Your message" />
+        <button id='send-message-button'>Send!</button>
+        <br>
+        <button id='leave-chat-button'>Leave chat!</button>
+    </div>
+    <div id='create-game-container'>
+        <input id='game-name-input' type='text' placeholder='Enter the game name' />
+        <button id='create-game-button'>Create Game!</button>
+        <p id='game-name-missing' class='display-none'>Please enter a name to create a new game!</p>
+    </div>
+
+    <div id='game-container' class='display-none'>
+        <canvas id='game-canvas' width='960' height='640'></canvas>
+    </div>
+
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/main.js"></script>
+
+</html>
