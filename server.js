@@ -1,6 +1,6 @@
 //  Tema .3 half done
 const Player = require('./logic/Player');
-// const Game = require('./logic/Game');
+const Game = require('./logic/Game');
 
 const express = require('express');
 const app = express();
@@ -19,7 +19,6 @@ server.listen(PORT, () => {
 });
 
 // const PLAYER_DIM = 32;
-var playerCount = 0;
 
 var counter = 0;
 
@@ -33,7 +32,7 @@ io.on('connection', function (socket) {
         counter = value;
         counter++;
         console.log(`New counter value in server: ${counter}`);
-        socket.emit('new-value', counter);
+        io.emit('new-value', counter);
     })
 
 
@@ -44,9 +43,9 @@ io.on('connection', function (socket) {
         chatUsers[socket.id] = user;
 
         //  Tema .2
-        playerCount++;
-        io.sockets.emit("chat-update", {
-            heading: `${playerCount} players online`,
+        Object.keys(chatUsers).length++;
+        io.emit("chat-update", {
+            heading: `${Object.keys(chatUsers).length} players online`,
             announcementPlayer: `${user.userName} joined chat`,
             announcementColor: user.userColor
         });
@@ -70,14 +69,14 @@ io.on('connection', function (socket) {
         console.log('[USER LEFT CHAT]', socket.id);
 
         //  Tema .2
-        playerCount--;
-        io.sockets.emit("chat-update", {
-            heading: `${playerCount} players online`,
+        io.emit("chat-update", {
+            heading: `${Object.keys(chatUsers).length-1} players online`,
             announcementPlayer: `${chatUsers[socket.id].userName} left chat`,
             announcementColor: chatUsers[socket.id].userColor
         });
+        Object.keys(chatUsers).length--;
         //  End Tema .2
-
+        
         delete chatUsers[socket.id];
         socket.leave('chat');
         socket.emit('menu');
@@ -100,27 +99,6 @@ io.on('connection', function (socket) {
 });
 
 app.use(api);
-
-class Game {
-    constructor(options) {
-        this.id = options.id
-        this.players = options.players
-        this.start();
-    }
-
-    start() {
-        const that = this;
-        setInterval(function () { gameLoop(that.id) }, 1000 / 60);
-    }
-}
-
-function gameLoop(id) {
-    const objectsForDraw = [];
-    games[id].players.forEach(function (player) {
-        objectsForDraw.push(player.forDraw());
-    })
-    io.to(id).emit('game-loop', objectsForDraw);
-}
 
 
 const chatUsers = {};
