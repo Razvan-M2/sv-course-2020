@@ -1,6 +1,6 @@
-//  Tema .3 half done
-const Player = require('./logic/Player');
-const Game = require('./logic/Game');
+const Game = require('./logic/classes/Game');
+const SpaceRanger = require('./logic/classes/Space_ranger');
+const PinkLady = require('./logic/classes/Pink_lady');
 
 const express = require('express');
 const app = express();
@@ -9,98 +9,99 @@ const server = require('http').createServer(app);
 const dotenv = require('dotenv');
 dotenv.config();
 
-const PORT = process.env.PORT;
+const PORT_GAME = process.env.PORT_GAME;
 const api = require('./logic/api');
 
 const io = require('socket.io')(server);
 
-server.listen(PORT, () => {
-    console.log(`Listening to port ${PORT}`);
+server.listen(PORT_GAME, () => {
+    console.log(`Listening to port ${PORT_GAME}`);
 });
-
-// const PLAYER_DIM = 32;
-
-var counter = 0;
 
 io.on('connection', function (socket) {
 
     console.log(`${socket.id} has connected`);
 
-    // Tema .1
-    socket.emit('new-value', counter);
-    socket.on('increment', function (value) {
-        counter = value;
-        counter++;
-        console.log(`New counter value in server: ${counter}`);
-        io.emit('new-value', counter);
+    socket.join('menu');
+    Object.keys(games).forEach(function (gameId) {
+        if (games[gameId].players.length === 1) {
+            socket.emit('add-game-to-list', { gameName: games[gameId].name, gameId: gameId })
+        }
     })
-
-
-    // Chat logic
-    socket.on('join-chat', function (user) {
-        console.log('[USER JOINED CHAT]', socket.id, user.userName);
-        //chatUsers[socket.id] = user.userName;
-        chatUsers[socket.id] = user;
-
-        //  Tema .2
-        Object.keys(chatUsers).length++;
-        io.emit("chat-update", {
-            heading: `${Object.keys(chatUsers).length} players online`,
-            announcementPlayer: `${user.userName} joined chat`,
-            announcementColor: user.userColor
-        });
-        // End Tema .2
-
-        socket.join('chat');
-        socket.emit('joined-chat');
-    })
-
-    socket.on('send-message', function (message) {
-        console.log('[USER SENT MESSAGE]', message);
-        io.to('chat').emit('new-message',
-            {
-                userColor: chatUsers[socket.id].userColor,
-                message: message,
-                userName: chatUsers[socket.id].userName
-            });
-    })
-
-    socket.on('leave-chat', function () {
-        console.log('[USER LEFT CHAT]', socket.id);
-
-        //  Tema .2
-        io.emit("chat-update", {
-            heading: `${Object.keys(chatUsers).length-1} players online`,
-            announcementPlayer: `${chatUsers[socket.id].userName} left chat`,
-            announcementColor: chatUsers[socket.id].userColor
-        });
-        Object.keys(chatUsers).length--;
-        //  End Tema .2
-        
-        delete chatUsers[socket.id];
-        socket.leave('chat');
-        socket.emit('menu');
-    })
-
     //  Game Logic
     socket.on('create-game', function (gameName) {
         console.log('[NEW GAME CREATED]');
         const gameId = 'game-' + socket.id;
-        const players = [new Player()];
+        players[socket.id] = new SpaceRanger({ gameId: gameId, socketId: socket.id });
         const game = new Game({
             id: gameId,
-            players: players
+            players: [players[socket.id]],
+            name: gameName
         });
         games[gameId] = game;
         console.log('[User joined ' + gameId + '] room');
         socket.join(gameId);
+        io.to('menu').emit('add-game-to-list', { gameName: gameName, gameId: gameId })
     })
-
+    socket.on('start-moving-player', function (direction) {
+        if (players[socket.id]) {
+            players[socket.id].startMoving(direction);
+            // console.log('[MOVE PLAYER]', direction)
+        }
+    })
+    socket.on('stop-moving-player', function (axis) {
+        if (players[socket.id]) {
+            players[socket.id].stopMoving(axis);
+            // console.log('[STOP PLAYER]', axis)
+        }
+    })
+    socket.on('join-game', function (gameId) {
+        console.log(`[SOCKET ${socket.id} JOINED GAME ${gameId}]`);
+        players[socket.id] = new PinkLady({ gameId: gameId, socketId: socket.id });
+        games[gameId].players.push(players[socket.id]);
+        socket.join(gameId);
+        io.to('menu').emit('remove-game-from-list', gameId);
+    })
+    socket.on('disconnect', function () {
+        console.log(`[SOCKET ${socket.id} DISCONNECTED]`);
+        if (players[socket.id]) {
+            const gameId = players[socket.id].gameId;
+            const game = games[gameId];
+            const playersToRemoveIds = game.players.map(function (player) {
+                return player.socketId;
+            })
+            clearInterval(game.interval);
+            delete games[gameId];
+            playersToRemoveIds.forEach(function (playerToRemoveId) {
+                delete players[playerToRemoveId];
+            })
+            io.to(gameId).emit('game-over', 'A player disconnected');
+        }
+    })
+    //  Tema .2
+    socket.on('leave-game-room', function () {
+        io.emit('menu');
+    })
 });
 
 app.use(api);
 
+function gameLoop(id) {
+    if (games[id]) {
+        games[id].update();
+        const objectsForDraw = [];
+        games[id].players.forEach(function (player) {
+            objectsForDraw.push(player.forDraw());
+        })
+        io.to(id).emit('game-loop', objectsForDraw);
+    }
+}
 
-const chatUsers = {};
 const games = {};
+const players = {};
+
+module.exports.gameLoop = gameLoop;
+
+
+
 

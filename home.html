@@ -5,39 +5,53 @@
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
-    <div id="showCounter"></div>
-    <button onclick="incrementValue()">Increment!</button>
+<body style="font-family: gameFont;">
     <img src='assets/map.png' class='display-none' id='map-image'>
     <img src='assets/space-ranger-player.png' class='display-none' id='space-ranger' />
-    <div id="join-chat">
-        <input type="color" id="user-color" name="favcolor" value="#ff0000">
-        <input type='text' id='user-name-input' placeholder='Enter your name' />
-        <button id='join-chat-button'>Join Chat</button>
-        <p id='user-name-missing' class='display-none'>Please enter user name to join chat!</p>
+    <img src="assets/space-ranger-player.png" class="display-none" id="space-ranger"/>
+    <img src="assets/pink-lady-player.png" class="display-none" id="pink-lady"/>
+    <div id="menu">
+        <div id="join-chat">
+            <input type="color" id="user-color" name="favcolor" value="#ff0000">
+            <input type="text" id="user-name-input" placeholder="Enter your name"/>
+            <button id="join-chat-button">Join Chat</button>
+            <p id="user-name-missing" class="display-none">Please enter user name to join chat!</p>
+        </div>
+        <div id="create-game-container">
+            <input id="game-name-input" type="text" placeholder="Enter the game name" />
+            <button id="create-game-button">Create Game!</button>
+            <p id="game-name-missing" class="display-none">Please enter a name to create a new game!</p>
+        </div>
+        <div id="game-list">
+
+        </div>
     </div>
-    <div id='chat-container' class='display-none'>
-        <div id='chat-messages'>
+
+    <!-- CHAT -->
+    <div id="chat-container" class="display-none">
+        <div id="chat-messages">
             <div id="chat-header">
                 0 players online
             </div>
         </div>
-        <input type='text' id='message' placeholder="Your message" />
-        <button id='send-message-button'>Send!</button>
+        <input type="text" id="message" placeholder="Your message"/>
+        <button id="send-message-button">Send!</button>
         <br>
-        <button id='leave-chat-button'>Leave chat!</button>
+        <button id="leave-chat-button">Leave chat!</button>
     </div>
-    <div id='create-game-container'>
-        <input id='game-name-input' type='text' placeholder='Enter the game name' />
-        <button id='create-game-button'>Create Game!</button>
-        <p id='game-name-missing' class='display-none'>Please enter a name to create a new game!</p>
+
+    <!-- GAME -->
+    <div id="game-container" class="display-none">
+        <canvas id="game-canvas" width="960" height="640"></canvas>
+        <button id="leave-game-button" class="display-none">Leave Room</button>
     </div>
-    <div id='game-container' class='display-none'>
-        <canvas id='game-canvas' width='960' height='640'></canvas>
-    </div>
+
+    
+
 </body>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="js/Inheritance.js"></script>
 <script src="js/main.js"></script>
 
 </html>
