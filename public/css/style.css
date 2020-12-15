@@ -88,3 +88,8 @@
     width:50%;
     margin:10px 25% 0px 25%;
 } 
+
+#game-info{
+    width:960px;
+    border:1px solid black;
+}

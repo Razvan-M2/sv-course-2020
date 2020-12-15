@@ -85,14 +85,20 @@ document.getElementById('create-game-button').addEventListener('click', function
     }
 })
 
-socketGame.on('game-loop', function (objectsForDraw) {
+socketGame.on('game-loop', function (data) {
 
     document.getElementById('join-chat').classList.add('display-none');
     document.getElementById('create-game-container').classList.add('display-none');
     document.getElementById('game-container').classList.remove('display-none');
+    //  Tema .2
+    document.getElementById('remaining-diamonds-container').innerText = data.remainingDiamonds;
+    document.getElementById('space-ranger-score-container').innerText = data.playersScores[0].score;
+    document.getElementById('pink-lady-score-container').innerText = data.playersScores[1].score;
+    //
+
     context.drawImage(document.getElementById('map-image'), 0, 0);
 
-    objectsForDraw.forEach(function (objectForDraw) {
+    data.objectsForDraw.forEach(function (objectForDraw) {
         context.drawImage(
             document.getElementById(objectForDraw.imageId),
             ...objectForDraw.drawImageParameters
@@ -115,6 +121,11 @@ document.addEventListener("keydown", function (event) {
         }
         case 'ArrowRight': {
             socketGame.emit('start-moving-player', 'right');
+            break;
+        }
+        case ' ': {
+            socketGame.emit('attack');
+
             break;
         }
     }
@@ -150,8 +161,6 @@ socketGame.on('add-game-to-list', function (options) {
     gameElementContainer.appendChild(gameNameElement);
     gameElementContainer.appendChild(joinGameButton);
 
-    //  Tried to fix some bug, on creating a game, the game remains in your list even
-    //  thou you created it.
     if (socketGame.id === options.gameId.substring(5))
         gameElementContainer.classList.add('display-none');
 
@@ -162,21 +171,13 @@ socketGame.on('remove-game-from-list', function (gameId) {
     document.getElementById(gameId).classList.add('display-none');
 })
 
-socketGame.on('game-over', function (reason) {
-    console.log('Game Over!', reason);
-
-    context.fillStyle = "white";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    context.font = "30px gameFont";
-    context.textAlign = "center";
-    context.fillStyle = "black";
-    context.fillText(`Game Over! ${reason}`, canvas.width / 2, canvas.height / 2);
+socketGame.on('game-over', function (imageId, gameId) {
+    context.drawImage(document.getElementById(imageId), 0, 0);
 
     document.getElementById('leave-game-button').classList.remove('display-none');
 
 })
-//  Tema .2
+
 document.getElementById('leave-game-button').addEventListener('click', function () {
     socketGame.emit('leave-game-room');
     document.getElementById('leave-game-button').classList.add('display-none');
@@ -188,48 +189,3 @@ socketGame.on('menu', function () {
     document.getElementById('join-chat').classList.remove('display-none');
     document.getElementById('game-name-input').classList.remove('display-none');
 })
-
-
-//  .Tema 3
-
-var user_1 = new Employee(
-    'Mike',
-    26, 1.79,
-    'My Home',
-    'Cleaning',
-    true,
-    2,
-    'Everything is dirty',
-    "I don't like cleaning");
-var user_2 = new Employee(
-    'Emma',
-    27,
-    1.70,
-    'Envy Ink',
-    'Tattoo Artist',
-    false,
-    6,
-    'Today the coffee machine was broken',
-    "I really enjoy working here");
-user_1.complain();
-user_2.info();
-user_2.isWorking();
-user_1.howIsWorking();
-
-//  Tema .4 
-
-//  .1
-var arr = [1, -2, 6, -7, 10, 9, 14, true, false, null, undefined];
-
-var arrNumb = arr.filter((value) => { return typeof (value) === 'number'; })
-console.log('%c' + arrNumb, 'color: #6666ff');
-
-//  .2
-var arrNumb = arrNumb.map((value) => {
-    return value * 10;
-});
-console.log('%c' + arrNumb, 'color: #ff6600');
-
-//  .3
-var result = arrNumb.reduce((initialValue, curentValue) => { return initialValue + curentValue });
-console.log('%c' + result, 'color: #6666ff');

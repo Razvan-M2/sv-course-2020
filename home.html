@@ -8,12 +8,20 @@
 <body style="font-family: gameFont;">
     <img src='assets/map.png' class='display-none' id='map-image'>
     <img src='assets/space-ranger-player.png' class='display-none' id='space-ranger' />
-    <img src="assets/space-ranger-player.png" class="display-none" id="space-ranger"/>
-    <img src="assets/pink-lady-player.png" class="display-none" id="pink-lady"/>
+    <img src="assets/space-ranger-player.png" class="display-none" id="space-ranger" />
+    <img src="assets/pink-lady-player.png" class="display-none" id="pink-lady" /> <img
+        src="assets/player-disconnected.png" class="display-none" id="player-disconnected" />
+    <img src="assets/diamond.png" class="display-none" id="diamond" />
+    <img src="assets/pink-lady-player-with-diamond.png" class="display-none" id="pink-lady-with-diamond" />
+    <img src="assets/space-ranger-player-with-diamond.png" class="display-none" id="space-ranger-with-diamond" />
+    <img src="assets/space-ranger-won.png" class="display-none" id="space-ranger-won" />
+    <img src="assets/pink-lady-won.png" class="display-none" id="pink-lady-won" />
+    <img src="assets/space-ranger-bullet.png" class="display-none" id="space-ranger-bullet" />
+    <img src="assets/pink-lady-bullet.png" class="display-none" id="pink-lady-bullet" />
     <div id="menu">
         <div id="join-chat">
             <input type="color" id="user-color" name="favcolor" value="#ff0000">
-            <input type="text" id="user-name-input" placeholder="Enter your name"/>
+            <input type="text" id="user-name-input" placeholder="Enter your name" />
             <button id="join-chat-button">Join Chat</button>
             <p id="user-name-missing" class="display-none">Please enter user name to join chat!</p>
         </div>
@@ -34,7 +42,7 @@
                 0 players online
             </div>
         </div>
-        <input type="text" id="message" placeholder="Your message"/>
+        <input type="text" id="message" placeholder="Your message" />
         <button id="send-message-button">Send!</button>
         <br>
         <button id="leave-chat-button">Leave chat!</button>
@@ -44,9 +52,16 @@
     <div id="game-container" class="display-none">
         <canvas id="game-canvas" width="960" height="640"></canvas>
         <button id="leave-game-button" class="display-none">Leave Room</button>
+        <!-- Tema .2 -->
+        <div id="game-info">
+            <div style="width:200px;margin:auto;">Diamante ramase : <span id="remaining-diamonds-container"></span>
+            </div>
+            <span style="float:left">Punctaj Space Ranger : <span id="space-ranger-score-container"></span></span>
+            <span style="float:right">Punctaj Pink Lady : <span id="pink-lady-score-container"></span></span>
+        </div>
     </div>
 
-    
+
 
 </body>
 

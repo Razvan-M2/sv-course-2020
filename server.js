@@ -1,6 +1,7 @@
 const Game = require('./logic/classes/Game');
 const SpaceRanger = require('./logic/classes/Space_ranger');
 const PinkLady = require('./logic/classes/Pink_lady');
+const Bullet = require('./logic/classes/Bullet');
 
 const express = require('express');
 const app = express();
@@ -45,6 +46,9 @@ io.on('connection', function (socket) {
     })
     socket.on('start-moving-player', function (direction) {
         if (players[socket.id]) {
+            if (games[players[socket.id].gameId].players.length != 2) {
+                return;
+            }
             players[socket.id].startMoving(direction);
             // console.log('[MOVE PLAYER]', direction)
         }
@@ -59,6 +63,7 @@ io.on('connection', function (socket) {
         console.log(`[SOCKET ${socket.id} JOINED GAME ${gameId}]`);
         players[socket.id] = new PinkLady({ gameId: gameId, socketId: socket.id });
         games[gameId].players.push(players[socket.id]);
+        games[gameId].generateDiamonds();
         socket.join(gameId);
         io.to('menu').emit('remove-game-from-list', gameId);
     })
@@ -70,38 +75,89 @@ io.on('connection', function (socket) {
             const playersToRemoveIds = game.players.map(function (player) {
                 return player.socketId;
             })
-            clearInterval(game.interval);
+            // clearInterval(game.interval);
+            clearInterval(game.gameInterval);
             delete games[gameId];
             playersToRemoveIds.forEach(function (playerToRemoveId) {
                 delete players[playerToRemoveId];
             })
-            io.to(gameId).emit('game-over', 'A player disconnected');
+            io.to(gameId).emit('game-over', 'player-disconnected', gameId);
         }
     })
-    //  Tema .2
     socket.on('leave-game-room', function () {
         io.emit('menu');
+    })
+
+    socket.on('attack', function () {
+        if (players[socket.id]) {
+            if (games[players[socket.id].gameId].players.length != 2) {
+                return;
+            }
+            //          Tema .3
+            const game = games[players[socket.id].gameId];
+            if (!players[socket.id].isShooting) {
+                game.bullets.push(new Bullet(players[socket.id]));
+                players[socket.id].isShooting = true;
+            }
+        }
     })
 });
 
 app.use(api);
 
-function gameLoop(id) {
-    if (games[id]) {
-        games[id].update();
-        const objectsForDraw = [];
-        games[id].players.forEach(function (player) {
-            objectsForDraw.push(player.forDraw());
-        })
-        io.to(id).emit('game-loop', objectsForDraw);
+function gameLoop(roomId) {
+    const game = games[roomId];
+    if (game) {
+        game.update();
+
+        if (game.over) {
+            const playersToRemoveIds = game.players.map(function (player) {
+                return player.socketId;
+            })
+            clearInterval(game.gameInterval);
+            delete games[roomId];
+            playersToRemoveIds.forEach(function (playerToRemoveId) {
+                delete players[playerToRemoveId];
+            })
+            io.to(roomId).emit('game-over', game.winner + '-won', roomId);
+        } else {
+            const objectsForDraw = [];
+            const score = [];
+            game.players.forEach(function (player,index) {
+                objectsForDraw.push(player.forDraw());
+                //  Tema .2
+                score.push({player_nr:index,score:player.score});
+            })
+            game.diamonds.forEach(function (diamond) {
+                objectsForDraw.push(diamond.forDraw());
+            })
+            game.bullets.forEach(function (bullet) {
+                objectsForDraw.push(bullet.forDraw());
+            })
+
+            const data = {
+                objectsForDraw: objectsForDraw,
+                gameInProgress: game.players.length == 2,
+                //  .Tema 2
+                playersScores:score,
+                remainingDiamonds: game.remainingDiamonds!=undefined? game.remainingDiamonds : 0
+                //
+            }
+
+            if (data.gameInProgress) {
+                data.score = {
+                    'space-ranger': game.players[0].score,
+                    'pink-lady': game.players[1].score
+                }
+            }
+            io.to(roomId).emit('game-loop', data);
+        }
     }
 }
 
 const games = {};
 const players = {};
+const bullets = {};
 
 module.exports.gameLoop = gameLoop;
-
-
-
-
+module.exports.games = games;
